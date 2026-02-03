@@ -1,6 +1,7 @@
 # Build outputs
 dist/
 build/
+release/
 *.spec
 
 # Python
