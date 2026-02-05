@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
-    "desc": "SnapText v1.0.0 Initial Release\n\n- Mac 菜单栏 OCR 工具\n- 完全本地化，无需 API\n- 支持 Bob 插件联动",
+    "version": "1.0.1",
+    "desc": "SnapText v1.0.1 Hotfix\n\n- 修复 Bob 插件连接问题 (0.0.0.0 绑定)\n- 修复签名问题\n- 修复更新检测",
     "url": "https://github.com/thirteenkai/snaptext/releases/latest"
 }

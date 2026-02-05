@@ -1,5 +1,5 @@
 {
-    "version": "1.5.8",
-    "desc": "最新版本 v1.5.8\n\n- 修复快捷键录制 Bug (显示消失/字母不显示)\n- 修复结果图标加载失败的问题\n- 优化应用打包体积\n\n请点击“确定”前往 GitHub 下载最新 DMG。",
-    "url": "https://github.com/thirteenkai/snaptext/releases/latest"
+    "version": "1.0.1",
+    "desc": "SnapText Bob 插件 v1.0.1\n\n- 修正安装指引\n- 兼容 SnapText v1.0.1\n- 修复元数据",
+    "url": "https://github.com/thirteenkai/snaptext/releases/latest/download/SnapText-Bob-Plugin_v1.0.1.bobplugin.zip"
 }
