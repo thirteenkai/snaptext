@@ -471,6 +471,8 @@ class SnapTextApp(rumps.App):
 
     def check_for_updates(self, _):
         """检查更新"""
+        # 使用 alert 而不是 notification，确保用户知道操作已响应
+        self.status_item.title = "正在检查更新..."
         threading.Thread(target=self._check_update_thread, daemon=True).start()
 
     def _check_update_thread(self):
@@ -478,19 +480,31 @@ class SnapTextApp(rumps.App):
             import urllib.request
             import ssl
             import json
+            import webbrowser
             
-            rumps.notification(APP_NAME, "正在检查更新...", "")
+            # Log start
+            log_path = os.path.expanduser("~/.snaptext/update_debug.log")
+            with open(log_path, "a") as f:
+                f.write(f"[{time.ctime()}] Start checking update...\n")
             
             url = "https://raw.githubusercontent.com/thirteenkai/snaptext/main/appcast.json"
+            
+            # Context
             ctx = ssl.create_default_context()
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
             
-            req = urllib.request.Request(url)
-            req.add_header('User-Agent', 'SnapText-Updater')
+            req = urllib.request.Request(
+                url, 
+                headers={'User-Agent': 'SnapText-Updater/1.0'}
+            )
             
-            with urllib.request.urlopen(req, context=ctx, timeout=5) as response:
-                data = json.loads(response.read().decode('utf-8'))
+            with urllib.request.urlopen(req, context=ctx, timeout=10) as response:
+                content = response.read().decode('utf-8')
+                data = json.loads(content)
+            
+            with open(log_path, "a") as f:
+                f.write(f"[{time.ctime()}] Fetched data: {str(data)[:100]}...\n")
             
             latest_ver = "0.0.0"
             download_url = ""
@@ -498,31 +512,46 @@ class SnapTextApp(rumps.App):
             if "version" in data:
                 latest_ver = data["version"]
                 download_url = data.get("url", "")
-            elif "versions" in data:
+            elif "versions" in data and len(data["versions"]) > 0:
                 v = data["versions"][0]
                 latest_ver = v.get("version", "0.0.0")
                 download_url = v.get("url", "")
             
-            # Simple compare
-            if latest_ver != APP_VERSION:
-                run_in_main_thread(lambda: self._prompt_update(latest_ver, download_url))
-            else:
-                rumps.notification(APP_NAME, "已是最新版本", f"当前版本 v{APP_VERSION}")
+            run_in_main_thread(lambda: self._handle_update_result(latest_ver, download_url))
                 
         except Exception as e:
             logger.error(f"Update check failed: {e}")
-            rumps.alert("更新检查失败", str(e))
+            with open(log_path, "a") as f:
+                f.write(f"[{time.ctime()}] ERROR: {e}\n{traceback.format_exc()}\n")
+            run_in_main_thread(lambda: rumps.alert("更新检查失败", f"无法连接服务器: {e}"))
 
-    def _prompt_update(self, version, url):
-        resp = rumps.alert(
-            title="发现新版本",
-            message=f"最新版本: v{version}\n当前版本: v{APP_VERSION}\n\n是否前往下载？",
-            ok="下载",
-            cancel="取消"
-        )
-        if resp == 1:
-            import webbrowser
-            webbrowser.open(url)
+    def _handle_update_result(self, latest_ver, download_url):
+        self.update_status() # Restore status text
+        
+        # version compare logic
+        is_newer = False
+        try:
+            v1_parts = [int(x) for x in latest_ver.split('.')]
+            v2_parts = [int(x) for x in APP_VERSION.split('.')]
+            if v1_parts > v2_parts:
+                is_newer = True
+        except:
+             # simple string compare fallback
+             if latest_ver > APP_VERSION:
+                 is_newer = True
+
+        if is_newer:
+            resp = rumps.alert(
+                title="发现新版本",
+                message=f"最新版本: v{latest_ver}\n当前版本: v{APP_VERSION}\n\n是否前往下载？",
+                ok="下载",
+                cancel="取消"
+            )
+            if resp == 1:
+                import webbrowser
+                webbrowser.open(download_url)
+        else:
+            rumps.alert("已是最新版本", f"当前版本 v{APP_VERSION} (v{latest_ver})")
 
     def open_settings(self, _, tab='general'):
         """打开设置窗口 (独立进程)"""

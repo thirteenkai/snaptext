@@ -11,6 +11,7 @@ STAGING_DIR="build/dmg_staging"
 # 1. Clean up
 rm -rf "$DMG_PATH" "$TEMP_DMG" "$STAGING_DIR"
 mkdir -p "$STAGING_DIR"
+mkdir -p "$(dirname "$DMG_PATH")"
 
 # 2. Prepare staging area
 echo "Copying app to staging area..."
@@ -53,7 +54,7 @@ echo "Setting up view options..."
 
 # Hide system files
 # Note: We need to hide them in the mounted volume
-MOUNT_POINT="/Volumes/$VOL_NAME"
+# MOUNT_POINT override removed, use detected mount point
 if [ -d "$MOUNT_POINT" ]; then
     # Create background folder if interested later, but for now just cleanup
     # Hide common artifacts
