@@ -1,6 +1,6 @@
 {
     "identifier": "com.snaptext.ocr",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "category": "ocr",
     "name": "SnapText",
     "summary": "本地高精度 OCR 服务，基于 RapidOCR，无需 API",
