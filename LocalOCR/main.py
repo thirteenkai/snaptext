@@ -260,7 +260,9 @@ class SnapTextApp(rumps.App):
         key = None
         mods = []
         if hotkey_str:
-            parts = hotkey_str.lower().replace(" ", "").split('+')
+            # 兼容 pynput 格式 (<cmd>+<shift>+o)
+            clean_str = hotkey_str.lower().replace(" ", "").replace("<", "").replace(">", "")
+            parts = clean_str.split('+')
             if len(parts) > 0:
                 key = parts[-1].upper()
                 mapping = {

@@ -191,7 +191,10 @@ class HotkeyManager:
         return event
 
     def _parse_hotkey(self, hotkey_str):
-        parts = hotkey_str.lower().replace(" ", "").split('+')
+        if not hotkey_str:
+            return 0, None
+            
+        parts = hotkey_str.lower().replace(" ", "").replace("<", "").replace(">", "").split('+')
         if not parts:
             return 0, None
             
