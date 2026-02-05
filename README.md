@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%20(Apple%20Silicon)-000000?style=flat-square&logo=apple" alt="Platform">
-  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/github/v/release/thirteenkai/snaptext?style=flat-square&color=blue" alt="Version">
   <img src="https://img.shields.io/badge/Privacy-Offline%20%26%20Secure-green?style=flat-square" alt="Privacy">
   <img src="https://img.shields.io/badge/License-MIT-orange?style=flat-square" alt="License">
 </p>
