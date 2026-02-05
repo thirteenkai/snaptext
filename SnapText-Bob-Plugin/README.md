@@ -11,7 +11,7 @@
 
 ## 📦 安装插件
 
-1. 下载最新的 `snaptext.bobplugin` 文件（可在 Releases 页面找到）。
+1. 下载最新的 `snaptext.bobplugin` 文件（可在 [Releases](https://github.com/thirteenkai/snaptext-bob-plugin/releases) 页面找到）。
 2. 双击文件，Bob 会提示安装。
 3. 安装后，在 Bob 的 **偏好设置** -> **翻译** -> **服务** -> **添加插件** 中，选择 **SnapText** 服务。
 
