@@ -84,7 +84,7 @@
 SnapText 可以作为 Bob 翻译软件的 **免费、离线** OCR 服务端。
 
 1. 确保 SnapText 主程序正在后台运行。
-2. 下载最新的 `SnapText-Bob-Plugin` 插件。
+2. 下载最新的 [**SnapText-Bob-Plugin**](https://github.com/thirteenkai/snaptext-bob-plugin/releases) 插件。
 3. 双击安装到 Bob。
 4. 在 Bob 设置中：**【服务】>【文本识别】> 选择 SnapText**。
 
