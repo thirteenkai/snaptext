@@ -7,7 +7,7 @@
     "icon": "icon.png",
     "author": "thirteenkai",
     "homepage": "https://github.com/thirteenkai/snaptext-bob-plugin",
-    "appcast": "https://raw.githubusercontent.com/thirteenkai/snaptext/main/appcast.json",
+    "appcast": "https://raw.githubusercontent.com/thirteenkai/snaptext-bob-plugin/main/appcast.json",
     "minBobVersion": "1.0.0",
     "options": [
         {
