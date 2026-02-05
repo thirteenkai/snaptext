@@ -58,8 +58,8 @@ app = BUNDLE(
         'CFBundleDisplayName': 'SnapText',
         'CFBundleGetInfoString': "SnapText OCR Tool",
         'CFBundleIdentifier': "com.snaptext.ocr",
-        'CFBundleVersion': "1.0.0",
-        'CFBundleShortVersionString': "1.0.0",
+        'CFBundleVersion': "1.0.1",
+        'CFBundleShortVersionString': "1.0.1",
         'NSHighResolutionCapable': True,
     },
 )

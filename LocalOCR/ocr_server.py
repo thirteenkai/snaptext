@@ -101,7 +101,7 @@ def run_server(port: int = None):
         port = config.port
     
     logger.info(f"启动 OCR 服务器，端口: {port}")
-    app.run(host='127.0.0.1', port=port, threaded=True, use_reloader=False)
+    app.run(host='0.0.0.0', port=port, threaded=True, use_reloader=False)
 
 
 def run_server_threaded(port: int = None):
@@ -113,7 +113,7 @@ def run_server_threaded(port: int = None):
     
     server_thread = threading.Thread(
         target=lambda: app.run(
-            host='127.0.0.1',
+            host='0.0.0.0',
             port=port,
             threaded=True,
             use_reloader=False

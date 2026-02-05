@@ -1,0 +1,5 @@
+{
+    "version": "1.5.8",
+    "desc": "最新版本 v1.5.8\n\n- 修复快捷键录制 Bug (显示消失/字母不显示)\n- 修复结果图标加载失败的问题\n- 优化应用打包体积\n\n请点击“确定”前往 GitHub 下载最新 DMG。",
+    "url": "https://github.com/thirteenkai/snaptext/releases/latest"
+}

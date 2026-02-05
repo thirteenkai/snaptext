@@ -35,7 +35,7 @@ from hotkey_manager import init_hotkey_manager
 
 # App Constants
 APP_NAME = "SnapText"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 
 # Configure Logging
 logging.basicConfig(
