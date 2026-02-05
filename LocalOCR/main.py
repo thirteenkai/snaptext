@@ -57,17 +57,40 @@ def run_in_main_thread(func):
         Cocoa.NSOperationQueue.mainQueue().addOperationWithBlock_(func)
 
 
+def get_resource_path(filename):
+    """获取资源文件路径"""
+    if getattr(sys, 'frozen', False):
+        # 打包后 (MacOS/SnapText)
+        base_path = os.path.dirname(sys.executable)
+        
+        # 1. Check Contents/Resources/resources/filename (PyInstaller standard with --add-data)
+        nested_res = os.path.join(os.path.dirname(base_path), 'Resources', 'resources', filename)
+        if os.path.exists(nested_res):
+            return nested_res
+            
+        # 2. Check Contents/Resources/filename (Direct copy)
+        root_res = os.path.join(os.path.dirname(base_path), 'Resources', filename)
+        if os.path.exists(root_res):
+            return root_res
+            
+        # 3. Check internal folder (PyInstaller 6+)
+        if hasattr(sys, '_MEIPASS'):
+            internal_res = os.path.join(sys._MEIPASS, 'resources', filename)
+            if os.path.exists(internal_res):
+                return internal_res
+            
+        return os.path.join(base_path, filename)
+    else:
+        # 开发时
+        return os.path.join(os.path.dirname(__file__), 'resources', filename)
+
+
 class SnapTextApp(rumps.App):
     """SnapText 菜单栏应用"""
     
     def __init__(self):
         # 确定资源路径
-        if getattr(sys, 'frozen', False):
-            # 打包后: Resources/menubar_icon.png
-            icon_path = os.path.join(os.path.dirname(sys.executable), '..', 'Resources', 'menubar_icon.png')
-        else:
-            # 开发时: resources/menubar_icon.png
-            icon_path = os.path.join(os.path.dirname(__file__), 'resources', 'menubar_icon.png')
+        icon_path = get_resource_path('menubar_icon.png')
         
         # 初始化 App
         super().__init__(
@@ -100,6 +123,18 @@ class SnapTextApp(rumps.App):
         
         # 启动 OCR 服务
         self.start_server()
+
+        # Prevent App Nap (Critical for background hotkeys)
+        try:
+            from Foundation import NSProcessInfo, NSActivityUserInitiatedAllowingIdleSystemSleep
+            process_info = NSProcessInfo.processInfo()
+            self.activity = process_info.beginActivityWithOptions_reason_(
+                NSActivityUserInitiatedAllowingIdleSystemSleep,
+                "Background Hotkey Listener"
+            )
+            logger.info("App Nap disabled.")
+        except Exception as e:
+            logger.warning(f"Failed to disable App Nap: {e}")
         
         # 延迟初始化 (权限检查 & 热键)
         rumps.Timer(self._late_init, 1).start()

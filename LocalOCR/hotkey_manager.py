@@ -136,8 +136,9 @@ class HotkeyManager:
                 return False
             
             self.runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, self.tap, 0)
+            # Ensure we attach to the MAIN run loop, not just the current one (though likely the same)
             Quartz.CFRunLoopAddSource(
-                Quartz.CFRunLoopGetCurrent(), 
+                Quartz.CFRunLoopGetMain(), 
                 self.runLoopSource, 
                 Quartz.kCFRunLoopCommonModes
             )
