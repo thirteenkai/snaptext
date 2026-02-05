@@ -1,12 +1,5 @@
 {
-    "identifier": "com.snaptext.ocr",
-    "versions": [
-        {
-            "version": "1.0.0",
-            "desc": "首次发布\n- 基于 RapidOCR 的本地 OCR\n- 支持中英日韩多语言\n- 智能行合并排版",
-            "sha256": "",
-            "url": "https://github.com/thirteenkai/snaptext/releases/download/v1.0.0/snaptext.bobplugin.zip",
-            "minBobVersion": "1.0.0"
-        }
-    ]
+    "version": "1.0.0",
+    "desc": "SnapText v1.0.0 Initial Release\n\n- Mac 菜单栏 OCR 工具\n- 完全本地化，无需 API\n- 支持 Bob 插件联动",
+    "url": "https://github.com/thirteenkai/snaptext/releases/latest"
 }

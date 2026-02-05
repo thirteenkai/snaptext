@@ -14,6 +14,8 @@ class Config:
         "language": "auto",  # auto, zh, en, ja, ko
         "mode": "accurate",  # fast, accurate
         "launch_at_login": False,
+        "silent_mode": True,  # 静默模式（通知而非弹窗）
+        "hotkey": "<cmd>+<shift>+o",  # 默认截图快捷键 (pynput格式)
         "history_limit": 20,
         "stats": {
             "today_count": 0,
@@ -28,12 +30,37 @@ class Config:
         self.history_file = self.config_dir / "history.json"
         self.log_file = self.config_dir / "service.log"
         
+        # 确保目录存在
+        self.config_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 加载配置
+        self._load()
+    
+    def reload(self):
+        """重新从磁盘加载配置"""
+        self._load()
+    
+    def _load(self):
+        """加载配置"""
         # 旧目录（用于迁移）
         self._old_config_dir = Path.home() / ".local_ocr"
         
+        # 确保配置目录存在 (虽然__init__中已创建，但_migrate_old_config可能需要)
         self._ensure_config_dir()
         self._migrate_old_config()  # 迁移旧配置
-        self._config = self._load_config()
+        
+        if self.config_file.exists():
+            try:
+                with open(self.config_file, "r", encoding="utf-8") as f:
+                    saved = json.load(f)
+                    # 合并默认配置
+                    config = self.DEFAULTS.copy()
+                    config.update(saved)
+                    self._config = config
+                    return
+            except Exception:
+                pass
+        self._config = self.DEFAULTS.copy()
     
     def _ensure_config_dir(self):
         """确保配置目录存在"""
@@ -109,6 +136,25 @@ class Config:
         # 实际设置开机启动
         self._set_launch_at_login(value)
     
+    @property
+    def silent_mode(self) -> bool:
+        return self._config.get("silent_mode", True)
+    
+    @silent_mode.setter
+    def silent_mode(self, value: bool):
+        self._config["silent_mode"] = value
+        self.save()
+        
+    @property
+    def hotkey(self) -> str:
+        return self._config.get("hotkey", self.DEFAULTS["hotkey"])
+    
+    @hotkey.setter
+    def hotkey(self, value: str):
+        self._config["hotkey"] = value
+        self.save()
+
+    
     def _set_launch_at_login(self, enable: bool):
         """实际设置开机启动（通过 LaunchAgent）"""
         import sys
@@ -119,18 +165,34 @@ class Config:
         # 获取应用路径
         if getattr(sys, 'frozen', False):
             # 打包后的应用
+            # sys.executable 指向 MacOS/SnapText (二进制)
+            # 我们需要指向 SnapText.app (Bundle)
             app_path = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
             if app_path.endswith('.app'):
-                executable = f"/usr/bin/open -a \"{app_path}\""
+                # 使用 open -a 命令启动 App
+                program_args = [
+                    "/usr/bin/open",
+                    "-a",
+                    app_path
+                ]
             else:
-                executable = sys.executable
+                # 可能是单纯的二进制文件
+                program_args = [sys.executable]
         else:
             # 开发时
-            executable = f"/usr/bin/python3 {os.path.abspath(__file__)}"
+            program_args = [
+                "/usr/bin/python3",
+                os.path.abspath(os.path.join(os.path.dirname(__file__), "main.py"))
+            ]
         
         if enable:
             # 创建 LaunchAgent 目录
             launch_agents_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 构建 ProgramArguments xml
+            args_xml = ""
+            for arg in program_args:
+                args_xml += f"        <string>{arg}</string>\n"
             
             # 创建 plist 文件
             plist_content = f'''<?xml version="1.0" encoding="UTF-8"?>
@@ -141,12 +203,13 @@ class Config:
     <string>com.snaptext.ocr</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/usr/bin/open</string>
-        <string>-a</string>
-        <string>/Applications/SnapText.app</string>
-    </array>
+{args_xml}    </array>
     <key>RunAtLoad</key>
     <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/snaptext.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/snaptext.err.log</string>
 </dict>
 </plist>
 '''

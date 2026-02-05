@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapText 设置</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-item active" data-target="general">
+                <i data-lucide="settings" class="icon"></i>
+                <span class="label">通用</span>
+            </div>
+            <div class="sidebar-item" data-target="shortcuts">
+                <i data-lucide="keyboard" class="icon"></i>
+                <span class="label">快捷键</span>
+            </div>
+            <div class="sidebar-item" data-target="about">
+                <i data-lucide="info" class="icon"></i>
+                <span class="label">关于</span>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 通用设置 -->
+            <div id="general" class="page active">
+                <div class="section">
+                    <div class="section-title">启动</div>
+                    <div class="form-row">
+                        <label>开机启动</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="launch_at_login">
+                            <label for="launch_at_login"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">服务</div>
+                    <div class="form-row">
+                        <label>端口号</label>
+                        <span id="port" class="port-display">9999</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快捷键设置 -->
+            <div id="shortcuts" class="page">
+                <div class="section">
+                    <div class="section-title">全局快捷键</div>
+                    <div class="form-row">
+                        <label>截图识别</label>
+                        <div class="hotkey-recorder" id="hotkey_recorder">
+                            <span class="placeholder">点击录制...</span>
+                            <div class="keys"></div>
+                        </div>
+                    </div>
+                    <div class="desc">点击输入框，然后按下键盘组合键设置</div>
+                </div>
+            </div>
+
+            <!-- 关于 -->
+            <div id="about" class="page">
+                <div class="about-container">
+                    <!-- <div class="app-logo">📷</div> -->
+                    <img src="logo.png" class="app-logo-img" style="width: 80px; height: 80px; margin-bottom: 5px;">
+                    <h2>SnapText</h2>
+                    <p class="version">Version 1.0.0</p>
+                    <p class="desc">macOS 菜单栏极速 OCR 工具</p>
+
+                    <div class="actions" style="margin: 15px 0;">
+                        <button id="btn-check-update" class="btn secondary">
+                            <i data-lucide="refresh-cw"></i> 检查更新
+                        </button>
+                    </div>
+
+                    <div class="links">
+                        <a href="#" onclick="openUrl('https://github.com/ThirteenKai/SnapText')">
+                            <i data-lucide="github"></i> GitHub
+                        </a>
+                        <span class="divider">|</span>
+                        <span class="author">
+                            <i data-lucide="user"></i> ThirteenKai
+                        </span>
+                    </div>
+
+                    <p class="copyright">Copyright © 2026 SnapText Team</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>

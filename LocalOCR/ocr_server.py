@@ -7,17 +7,14 @@ from ocr_engine import ocr_from_base64
 from config import config
 
 # 配置日志
-logging.basicConfig(
-    filename=str(config.log_file),
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+# 获取 logger (配置由主程序统一管理)
+logger = logging.getLogger("ocr_server")
 
 app = Flask(__name__)
 
-# 禁用 Flask 默认日志
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+# 禁用 Flask 默认日志 (verbose)
+flask_log = logging.getLogger('werkzeug')
+flask_log.setLevel(logging.ERROR)
 
 # 回调函数，用于通知菜单栏应用状态变化
 _status_callback = None
@@ -65,7 +62,7 @@ def ocr_endpoint():
         # 更新统计
         config.increment_count()
         
-        logging.info(f"OCR 成功: {len(texts)} 行文本, 语言: {language}")
+        logger.info(f"OCR 成功: {len(texts)} 行文本, 语言: {language}")
         
         response = jsonify({
             'texts': texts,
@@ -75,7 +72,7 @@ def ocr_endpoint():
         return response
         
     except Exception as e:
-        logging.error(f"OCR 错误: {str(e)}")
+        logger.error(f"OCR 错误: {str(e)}")
         response = jsonify({'error': str(e)})
         response.status_code = 500
         response.headers['Access-Control-Allow-Origin'] = '*'
@@ -103,7 +100,7 @@ def run_server(port: int = None):
     if port is None:
         port = config.port
     
-    logging.info(f"启动 OCR 服务器，端口: {port}")
+    logger.info(f"启动 OCR 服务器，端口: {port}")
     app.run(host='127.0.0.1', port=port, threaded=True, use_reloader=False)
 
 
@@ -124,5 +121,5 @@ def run_server_threaded(port: int = None):
         daemon=True
     )
     server_thread.start()
-    logging.info(f"OCR 服务器线程已启动，端口: {port}")
+    logger.info(f"OCR 服务器线程已启动，端口: {port}")
     return server_thread

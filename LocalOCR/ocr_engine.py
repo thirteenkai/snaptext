@@ -75,52 +75,6 @@ def base64_to_image(base64_str: str) -> Image.Image:
     return process_image(image_data)
 
 
-def ocr_from_base64(base64_str: str, mode: str = "accurate") -> Tuple[List[str], str]:
-    """
-    从 Base64 图片进行 OCR
-    
-    Args:
-        base64_str: Base64 编码的图片
-        mode: 识别模式 (fast/accurate)
-    
-    Returns:
-        (texts, language): 识别结果列表和检测到的语言
-    """
-    try:
-        # 解码图片
-        image = base64_to_image(base64_str)
-        
-        # 转换为 RGB 模式（如果是 RGBA）
-        if image.mode == "RGBA":
-            background = Image.new("RGB", image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])
-            image = background
-        elif image.mode != "RGB":
-            image = image.convert("RGB")
-        
-        # 执行 OCR
-        ocr = get_ocr_engine()
-        result, _ = ocr(image)
-        
-        if result is None:
-            return [], "auto"
-        
-        # 智能合并同一行的文本
-        # result 格式: [[box, text, confidence], ...]
-        # box 格式: [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
-        texts = merge_lines_by_position(result)
-        
-        # 检测语言
-        combined_text = " ".join(texts)
-        language = detect_language(combined_text)
-        
-        return texts, language
-        
-    except Exception as e:
-        print(f"OCR 错误: {e}")
-        raise
-
-
 def merge_lines_by_position(ocr_result: list) -> List[str]:
     """
     根据文本框的 Y 坐标位置智能合并同一行的文本
@@ -181,44 +135,54 @@ def merge_lines_by_position(ocr_result: list) -> List[str]:
     return result
 
 
+def _ocr_image(image: Image.Image, mode: str = "accurate") -> Tuple[List[str], str]:
+    """
+    内部 OCR 处理函数
+    """
+    # 转换为 RGB 模式
+    if image.mode == "RGBA":
+        background = Image.new("RGB", image.size, (255, 255, 255))
+        background.paste(image, mask=image.split()[3])
+        image = background
+    elif image.mode != "RGB":
+        image = image.convert("RGB")
+    
+    # 执行 OCR
+    ocr = get_ocr_engine()
+    result, _ = ocr(image)
+    
+    if result is None:
+        return [], "auto"
+    
+    # 智能合并同一行的文本
+    texts = merge_lines_by_position(result)
+    
+    # 检测语言
+    combined_text = " ".join(texts)
+    language = detect_language(combined_text)
+    
+    return texts, language
+
+
+def ocr_from_base64(base64_str: str, mode: str = "accurate") -> Tuple[List[str], str]:
+    """
+    从 Base64 图片进行 OCR
+    """
+    try:
+        image = base64_to_image(base64_str)
+        return _ocr_image(image, mode)
+    except Exception as e:
+        print(f"OCR 错误: {e}")
+        raise
+
+
 def ocr_from_file(file_path: str, mode: str = "accurate") -> Tuple[List[str], str]:
     """
     从文件进行 OCR
-    
-    Args:
-        file_path: 图片文件路径
-        mode: 识别模式 (fast/accurate)
-    
-    Returns:
-        (texts, language): 识别结果列表和检测到的语言
     """
     try:
         image = Image.open(file_path)
-        
-        # 转换为 RGB 模式
-        if image.mode == "RGBA":
-            background = Image.new("RGB", image.size, (255, 255, 255))
-            background.paste(image, mask=image.split()[3])
-            image = background
-        elif image.mode != "RGB":
-            image = image.convert("RGB")
-        
-        # 执行 OCR
-        ocr = get_ocr_engine()
-        result, _ = ocr(image)
-        
-        if result is None:
-            return [], "auto"
-        
-        # 提取文本
-        texts = [item[1] for item in result]
-        
-        # 检测语言
-        combined_text = " ".join(texts)
-        language = detect_language(combined_text)
-        
-        return texts, language
-        
+        return _ocr_image(image, mode)
     except Exception as e:
         print(f"OCR 错误: {e}")
         raise
