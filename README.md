@@ -72,12 +72,12 @@
 
 ### 使用流程
 
-1. **启动**：打开应用，菜单栏会出现一个相机图标 📷。
-2. **截图**：按下快捷键，光标变为截图模式。
+1. **启动**：打开应用，菜单栏会出现 SnapText 图标。
+2. **截图**：按下快捷键（默认 `Command+1`），光标变为截图模式。
 3. **识别**：框选需要识别的文字区域。
 4. **结果**：
-   - 文字自动 **复制到剪贴板**。
-   - (可选) 弹出预览窗口查看结果。
+   - 识别的文字自动 **复制到剪贴板**。
+   - 弹出系统通知提示识别成功。
 
 ## 🧩 Bob 插件集成
 
@@ -106,6 +106,14 @@ pip install -r LocalOCR/requirements.txt
 python3 LocalOCR/main.py
 ```
 
-## 📄 许可证
+## � 致谢
 
-本项目基于 MIT License 开源。
+本项目使用了以下优秀的开源项目：
+
+- [RapidOCR](https://github.com/RapidAI/RapidOCR): 提供了强大的离线 OCR 推理引擎。
+- [Bob](https://bobtranslate.com/): 提供了优秀的翻译软件和插件生态。
+- [rumps](https://github.com/jaredks/rumps): 提供了简洁的 macOS 菜单栏应用框架。
+
+## 📄 License
+
+MIT License 开源。
