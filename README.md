@@ -4,88 +4,88 @@
   <img src="LocalOCR/resources/icon.png" width="128" alt="SnapText Logo">
 </p>
 
-**SnapText** 是一款运行在 macOS 菜单栏的极速本地 OCR 工具。它基于 [RapidOCR](https://github.com/RapidAI/RapidOCR) 引擎，无需联网，无需申请 API Key，开箱即用。
+**SnapText** is a high-performance, offline OCR tool designed for macOS.
 
-## ✨ 特性
+It resides in your menu bar, ready to capture and recognize text from your screen instantly using the RapidOCR engine (ONNX Runtime). All processing is done locally on your device, ensuring your data remains private.
 
-- **完全本地化**：基于 RapidOCR (ONNX Runtime)，所有识别在本地完成，保护隐私。
-- **极速识别**：优化的模型加载策略，截图后毫秒级响应。
-- **简单易用**：
-  - 菜单栏常驻，点击图标或使用快捷键即可截图。
-  - 自动将识别结果复制到剪贴板。
-  - 支持弹窗预览结果（可关闭）。
-- **开箱即用**：无需配置 Python 环境，下载 DMG 安装即可使用。
-- **Bob 插件支持**：提供独立的 Bob 插件，可作为 Bob 的 OCR 服务端使用。
+---
 
-## 📦 下载与安装
+## Key Features
 
-1. 前往 [Releases](https://github.com/thirteenkai/snaptext/releases) 页面下载最新的 `SnapText.dmg`。
-2. 双击打开 DMG，将 `SnapText.app` 拖入 `Applications` 文件夹。
-3. 从启动台或应用文件夹启动 SnapText。
+* **Privacy First**: No internet connection required. No API keys needed. All OCR operations are performed offline on your Mac.
+* **High Performance**: Optimized model loading ensures millisecond-level response times.
+* **Seamless Workflow**:
+  * Menu bar resident for quick access.
+  * Global hotkeys for instant screen capture.
+  * Automatic copying of recognized text to clipboard.
+  * Optional preview window for results.
+* **Bob Integration**: Includes a plugin to serve as a local, offline OCR engine for [Bob](https://bobtranslate.com/).
 
-###  系统要求
+## System Requirements
 
-- macOS 11.0 (Big Sur) 或更高版本
-- **目前仅支持 Apple Silicon (M1/M2/M3...) 芯片** (Intel Mac 暂不支持)
-- 约 200MB 磁盘空间
+* **Architecture**: Apple Silicon (M1 / M2 / M3) Only.
+  * *Note: Intel Macs are not currently supported.*
+* **OS**: macOS 11.0 (Big Sur) or later.
+* **Storage**: Approximately 200MB.
 
-### ⚠️ 常见问题 (Troubleshooting)
+## Installation
 
-#### “SnapText”已损坏，无法打开
+1. Download the latest release (`.dmg`) from the [Releases Page](https://github.com/thirteenkai/snaptext/releases).
+2. Open the DMG file and drag **SnapText.app** into your **Applications** folder.
+3. Launch SnapText from your Applications folder or Launchpad.
 
-这是因为 macOS 的安全机制（Gatekeeper）拦截了未签名的应用。请在终端执行以下命令修复：
+### Troubleshooting
+
+**"SnapText is damaged and can't be opened."**
+
+This error occurs due to macOS Gatekeeper restrictions on unsigned applications. To resolve this, run the following command in Terminal:
 
 ```bash
 sudo xattr -cr /Applications/SnapText.app
 ```
 
-(如果是自定义路径，请替换为实际路径)
+**Permissions**
 
-执行后即可正常打开。
+Upon first use, macOS will request permissions for **Screen Recording** and **Accessibility**. These are required for taking screenshots and handling global shortcuts. Please grant these permissions to ensure full functionality.
 
-#### 首次启动需要权限
+## Usage
 
-首次截图时，macOS 会提示请求**屏幕录制**和**辅助功能**权限，请务必允许，否则无法截图或使用快捷键。
+1. **Launch**: Open SnapText. A camera icon will appear in your menu bar.
+2. **Capture**: Press the default hotkey `Cmd + Opt + S` (customizable in Settings).
+3. **Result**: The recognized text is automatically copied to your clipboard. A preview window may appear if enabled.
 
-## 🚀 使用方法
+## Bob Plugin Integration
 
-1. **启动应用**：菜单栏会出现 SnapText 图标。
-2. **快捷键截图**：默认快捷键 `Cmd + Opt + S`（可在设置中修改）。
-3. **获取结果**：
-    - 识别成功后，文字会自动复制到剪贴板。
-    - 可以在“设置”中选择是否显示结果弹窗。
+SnapText can function as a local OCR service for Bob.
 
-## 🔌 Bob 插件集成
+1. Ensure SnapText Main App is running in the background.
+2. Download the `snaptext.bobplugin` from the Releases page.
+3. Double-click to install it into Bob.
+4. In Bob Preferences > Services > Text Recognition, select **SnapText**.
 
-如果您是 [Bob](https://bobtranslate.com/) 用户，可以使用 SnapText 作为 Bob 的离线 OCR 服务。
+## Development
 
-> **注意**：Bob 插件依赖 SnapText 主程序在后台运行。
+To build from source:
 
-- **插件仓库**：[SnapText-Bob-Plugin](https://github.com/thirteenkai/snaptext-bob-plugin) (请前往此处下载插件)
-
-## 🛠 开发构建
-
-如果您想自己编译代码：
-
-1. 克隆仓库：
+1. Clone the repository:
 
     ```bash
     git clone https://github.com/thirteenkai/snaptext.git
     cd snaptext
     ```
 
-2. 安装依赖：
+2. Install dependencies:
 
     ```bash
     pip install -r LocalOCR/requirements.txt
     ```
 
-3. 运行：
+3. Run the application:
 
     ```bash
     python3 LocalOCR/main.py
     ```
 
-## 📄 许可证
+## License
 
 MIT License
