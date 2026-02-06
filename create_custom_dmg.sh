@@ -15,7 +15,8 @@ mkdir -p "$(dirname "$DMG_PATH")"
 
 # 2. Prepare staging area
 echo "Copying app to staging area..."
-cp -r "$APP_PATH" "$STAGING_DIR/"
+# Use ditto to preserve symlinks and metadata (crucial for App Bundles)
+ditto "$APP_PATH" "$STAGING_DIR/$(basename "$APP_PATH")"
 ln -s /Applications "$STAGING_DIR/Applications"
 
 # 3. Create writable image
