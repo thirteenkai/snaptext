@@ -133,7 +133,7 @@ async function checkUpdate() {
         if (res.error) {
             alert("检查失败: " + res.error);
         } else {
-            const currentVer = "1.0.0";
+            const currentVer = "1.0.1";
             const latestVer = res.latest; // e.g. "1.5.6"
 
             if (compareVersions(latestVer, currentVer) > 0) {
