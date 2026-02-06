@@ -35,7 +35,7 @@ from hotkey_manager import init_hotkey_manager
 
 # App Constants
 APP_NAME = "SnapText"
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"
 
 # Configure Logging
 logging.basicConfig(
@@ -335,9 +335,25 @@ class SnapTextApp(rumps.App):
             self.update_status()
 
     def restart_server(self, _):
-        """重启整个应用"""
+        """重启整个应用 (避免 TCC 权限重置)"""
         rumps.notification(APP_NAME, "正在重启...", "")
-        os.execv(sys.executable, ['python'] + sys.argv)
+        
+        try:
+            import subprocess
+            cmd = []
+            if getattr(sys, 'frozen', False):
+                cmd = [sys.executable]
+            else:
+                cmd = [sys.executable] + sys.argv
+            
+            # Spawn new process
+            subprocess.Popen(cmd, close_fds=True)
+            
+            # Quit current
+            rumps.quit_application()
+        except Exception as e:
+            logger.error(f"Restart failed: {e}")
+            rumps.alert("重启失败", str(e))
 
     def update_status(self):
         """更新状态栏文字"""
